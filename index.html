@@ -265,6 +265,16 @@ select.finp{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmln
 .empty p{font-size:13px;font-weight:500}
 .pdfbtn{background:linear-gradient(135deg,#EA4335,#C62828);color:#fff;border:none;border-radius:var(--rs);padding:11px 18px;font-size:13px;font-weight:700;font-family:"Nunito",sans-serif;cursor:pointer;width:100%;display:flex;align-items:center;justify-content:center;gap:7px;transition:all .2s;margin-bottom:10px}
 .pdfbtn:hover{transform:translateY(-1px)}
+
+@media print {
+  body { background: white; padding: 0; }
+  .phone { width: 100%; height: auto; border-radius: 0; box-shadow: none; }
+  .sbar, .appbar, .fambar, .botnav, .btnp, #sc-qrcard > div:last-child, #sc-qrcard > button { display: none !important; }
+  .content { overflow: visible; padding: 0; }
+  #sc-qrcard { display: block !important; }
+  .screen:not(#sc-qrcard) { display: none !important; }
+  #patientCardPreview { box-shadow: none; border: 2px solid #1A73E8; }
+}
 </style>
 </head>
 <body>
@@ -461,15 +471,14 @@ select.finp{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmln
 
 <!-- EMERGENCY -->
 <div class="screen" id="sc-emergency">
-  <div class="sech"><div class="secbar" style="background:var(--d)"></div><h3 style="color:var(--d)" id="te-tit">Números de Emergencia</h3></div>
+  <div class="sech"><div class="secbar" style="background:var(--d)"></div><h3 style="color:var(--d)" id="te-tit">🚨 Números de Emergencia</h3></div>
   <div id="emergList"></div>
-  <div class="sech"><div class="secbar" style="background:#7B1FA2"></div><h3 style="color:#7B1FA2" id="te-hosp">Hospitales en PR</h3></div>
-  <div id="hospList"></div>
+
 </div>
 
 <!-- DIRECTORY -->
 <div class="screen" id="sc-directory">
-  <div class="sech"><div class="secbar" style="background:var(--a)"></div><h3 style="color:var(--a)" id="tdr-tit">Directorio Médico PR</h3></div>
+  <div class="sech"><div class="secbar" style="background:var(--a)"></div><h3 style="color:var(--a)" id="tdr-tit">Hospitales y Directorios Médicos PR</h3></div>
   <input class="dictsearch" id="docSearch" placeholder="🔍 Buscar médico..." oninput="filterDocs()">
   <div class="dirfilters" id="specFilters"></div>
   <div id="docList"></div>
@@ -518,6 +527,69 @@ select.finp{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmln
   <div style="height:20px"></div>
 </div>
 
+
+<!-- QR CARD SCREEN -->
+<div class="screen" id="sc-qrcard">
+  <div style="background:linear-gradient(135deg,var(--p),#1565C0);border-radius:var(--r);padding:16px;margin-bottom:12px;text-align:center">
+    <div style="font-size:28px;margin-bottom:6px">🪪</div>
+    <div style="font-family:Nunito,sans-serif;font-size:16px;font-weight:800;color:#fff" id="qrc-title">Tarjeta Médica de Emergencia</div>
+    <div style="font-size:11px;color:rgba(255,255,255,.75);margin-top:4px" id="qrc-sub">Escanea el QR para ver información médica completa</div>
+  </div>
+
+  <!-- PATIENT CARD PREVIEW -->
+  <div style="background:#fff;border-radius:var(--r);padding:16px;margin-bottom:12px;box-shadow:var(--sh);border:2px solid var(--p)" id="patientCardPreview">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--dv)">
+      <div style="width:52px;height:52px;border-radius:50%;background:var(--pl);border:2px solid var(--p);display:flex;align-items:center;justify-content:center;font-size:26px">👤</div>
+      <div>
+        <div style="font-family:Nunito,sans-serif;font-size:15px;font-weight:800;color:var(--t)" id="qr-name">Nombre del Paciente</div>
+        <div style="font-size:11px;color:var(--t2)" id="qr-dob"></div>
+        <div style="display:flex;gap:6px;margin-top:4px">
+          <span style="background:#FDECEA;color:var(--d);font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px" id="qr-blood">🩸 A+</span>
+          <span style="background:var(--pl);color:var(--p);font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px" id="qr-ins-badge"></span>
+        </div>
+      </div>
+    </div>
+    <!-- Allergies -->
+    <div style="margin-bottom:10px">
+      <div style="font-size:10px;font-weight:700;color:var(--d);margin-bottom:4px">⚠️ ALERGIAS</div>
+      <div style="font-size:12px;color:var(--t);font-weight:600" id="qr-allergies">Ninguna indicada</div>
+    </div>
+    <!-- Active Medications -->
+    <div style="margin-bottom:10px">
+      <div style="font-size:10px;font-weight:700;color:var(--p);margin-bottom:4px">💊 MEDICAMENTOS ACTIVOS</div>
+      <div style="font-size:12px;color:var(--t)" id="qr-meds">Ninguno</div>
+    </div>
+    <!-- Directives -->
+    <div style="margin-bottom:10px">
+      <div style="font-size:10px;font-weight:700;color:var(--a);margin-bottom:4px">📋 DIRECTRICES</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap" id="qr-dirs"></div>
+    </div>
+    <!-- Emergency Contact -->
+    <div style="background:var(--bg);border-radius:8px;padding:8px 10px">
+      <div style="font-size:10px;font-weight:700;color:var(--t2);margin-bottom:2px">📞 EMERGENCIA</div>
+      <div style="font-size:12px;font-weight:600;color:var(--t)" id="qr-emerg">No indicado</div>
+    </div>
+    <!-- EASS Health branding -->
+    <div style="text-align:center;margin-top:12px;padding-top:10px;border-top:1px solid var(--dv)">
+      <div style="font-size:10px;color:var(--t2)">💙 EASS Health — Mi Salud Familiar</div>
+      <div style="font-size:9px;color:var(--t2);margin-top:2px">elmerabimelech-hue.github.io/EASShealth</div>
+    </div>
+  </div>
+
+  <!-- QR CODE -->
+  <div style="background:#fff;border-radius:var(--r);padding:16px;text-align:center;box-shadow:var(--sh);border:1px solid var(--dv);margin-bottom:12px">
+    <div style="font-family:Nunito,sans-serif;font-size:13px;font-weight:800;color:var(--t);margin-bottom:4px" id="qrc-scan">Escanea para ver tu información</div>
+    <div style="font-size:11px;color:var(--t2);margin-bottom:14px" id="qrc-hosp">Médicos y hospitales pueden escanear este código</div>
+    <div id="patientQR" style="display:flex;justify-content:center;margin-bottom:12px"></div>
+    <div style="font-size:10px;color:var(--t2);background:var(--bg);padding:6px 10px;border-radius:8px" id="qrc-update">⚡ Se actualiza automáticamente con tus datos</div>
+  </div>
+
+  <!-- ACTION BUTTONS -->
+  <button class="btnp" onclick="generatePatientQR()" id="qrc-gen" style="margin-bottom:8px">🔄 Actualizar QR con mis datos</button>
+  <button class="btnp" onclick="printCard()" id="qrc-print" style="background:#7B1FA2;margin-bottom:8px">🖨️ Imprimir tarjeta</button>
+  <button class="btnp" onclick="shareCard()" id="qrc-share" style="background:var(--a);margin-bottom:20px">📤 Compartir tarjeta</button>
+</div>
+
 </div><!-- end content -->
 
 <!-- BOTTOM NAV -->
@@ -531,6 +603,7 @@ select.finp{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmln
   <button class="navit" onclick="goTo('emergency',6)" id="nav-6"><div class="navic">🚨</div><span id="nl6">SOS</span></button>
   <button class="navit" onclick="goTo('directory',7)" id="nav-7"><div class="navic">👨‍⚕️</div><span id="nl7">Médicos</span></button>
   <button class="navit" onclick="goTo('tools',8)" id="nav-8"><div class="navic">🔬</div><span id="nl8">Tools</span></button>
+  <button class="navit" onclick="goTo('qrcard',9)" id="nav-9"><div class="navic">🪪</div><span id="nl9">Mi QR</span></button>
 </nav>
 
 <!-- MODALS -->
@@ -671,75 +744,54 @@ let directives={cpr:null,blood:null,intub:null,dialysis:null,organ:null,chemo:nu
 let activeSpec='Todos',activeCity='Todos';
 
 // DOCTOR DIRECTORY DATA
-const DOCTORS=[
-// REGIÓN METRO (San Juan, Bayamón, Guaynabo, Carolina)
-{name:'Dr. Carlos Rodríguez',spec:'Cardiología',region:'Metro',city:'San Juan',addr:'Ave. Ashford 1055, Condado',phone:'787-724-1234'},
-{name:'Dra. Ana Martínez',spec:'Cardiología',region:'Metro',city:'Bayamón',addr:'Calle Degetau 450, Bayamón',phone:'787-780-2345'},
-{name:'Dr. José Rivera',spec:'Endocrinología',region:'Metro',city:'San Juan',addr:'Ave. Ponce de León 1000, Hato Rey',phone:'787-763-3456'},
-{name:'Dr. Roberto García',spec:'Neurología',region:'Metro',city:'San Juan',addr:'Ave. F.D. Roosevelt 500, Hato Rey',phone:'787-753-5678'},
-{name:'Dr. Miguel Sánchez',spec:'Oncología',region:'Metro',city:'San Juan',addr:'Centro Médico de PR, Río Piedras',phone:'787-754-7890'},
-{name:'Dr. Pedro Díaz',spec:'Pediatría',region:'Metro',city:'San Juan',addr:'Ave. Américo Miranda 100, San Juan',phone:'787-765-9012'},
-{name:'Dra. Rosa Colón',spec:'Pediatría',region:'Metro',city:'Bayamón',addr:'Calle Santa Cruz 300, Bayamón',phone:'787-786-0123'},
-{name:'Dr. Antonio Vega',spec:'Ginecología',region:'Metro',city:'San Juan',addr:'Ave. Ashford 800, Condado',phone:'787-725-1111'},
-{name:'Dr. Fernando Nieves',spec:'Ortopedia',region:'Metro',city:'San Juan',addr:'Ave. Universidad 400, Río Piedras',phone:'787-758-3333'},
-{name:'Dr. Héctor Reyes',spec:'Dermatología',region:'Metro',city:'San Juan',addr:'Ave. Condado 500, Santurce',phone:'787-721-5555'},
-{name:'Dr. Eduardo Ramos',spec:'Psiquiatría',region:'Metro',city:'San Juan',addr:'Ave. De Diego 600, San Juan',phone:'787-723-7777'},
-{name:'Dr. Luis Vargas',spec:'Medicina General',region:'Metro',city:'San Juan',addr:'Calle Loíza 1200, Santurce',phone:'787-726-9999'},
-{name:'Dra. Norma Ortiz',spec:'Medicina General',region:'Metro',city:'Bayamón',addr:'Calle Clemente 500, Bayamón',phone:'787-785-0000'},
-{name:'Dr. Alexis Feliciano',spec:'Gastroenterología',region:'Metro',city:'San Juan',addr:'Centro Médico, Río Piedras',phone:'787-756-3456'},
-{name:'Dr. Wilfredo Nazario',spec:'Nefrología',region:'Metro',city:'San Juan',addr:'Ave. Ponce de León 800, San Juan',phone:'787-764-5678'},
-{name:'Dra. Tania Burgos',spec:'Oftalmología',region:'Metro',city:'San Juan',addr:'Ave. Ashford 600, Condado',phone:'787-724-6789'},
-{name:'Dr. Samuel Acosta',spec:'Oftalmología',region:'Metro',city:'Bayamón',addr:'Plaza del Sol, Bayamón',phone:'787-779-7890'},
-{name:'Dra. Evelyn Bonilla',spec:'Reumatología',region:'Metro',city:'San Juan',addr:'Centro Médico, Río Piedras',phone:'787-754-8901'},
-{name:'Dra. Yaritza Baez',spec:'Urología',region:'Metro',city:'San Juan',addr:'Medical Arts Building, Hato Rey',phone:'787-763-0123'},
-{name:'Dr. Néstor Guzmán',spec:'Cardiología',region:'Metro',city:'Guaynabo',addr:'Medical Center Plaza, Guaynabo',phone:'787-789-1234'},
-{name:'Dra. Lisette Maldonado',spec:'Ginecología',region:'Metro',city:'Carolina',addr:'Ave. Roberto Clemente 400, Carolina',phone:'787-757-2345'},
-// REGIÓN NORTE (Arecibo, Manatí, Barceloneta, Vega Baja)
-{name:'Dra. Vivian Castro',spec:'Psiquiatría',region:'Norte',city:'Arecibo',addr:'Ave. Esteves 300, Arecibo',phone:'787-879-8888'},
-{name:'Dr. Rafael Medina',spec:'Medicina General',region:'Norte',city:'Arecibo',addr:'Calle González 100, Arecibo',phone:'787-879-1234'},
-{name:'Dra. Carmen Rosado',spec:'Pediatría',region:'Norte',city:'Manatí',addr:'Hospital de Área de Manatí, Manatí',phone:'787-621-2345'},
-{name:'Dr. Ernesto Crespo',spec:'Ortopedia',region:'Norte',city:'Arecibo',addr:'Ave. José A. Cedeño 200, Arecibo',phone:'787-650-3456'},
-{name:'Dra. Marta Lucena',spec:'Cardiología',region:'Norte',city:'Manatí',addr:'Calle Hernández 500, Manatí',phone:'787-854-4567'},
-{name:'Dr. Ángel Pagán',spec:'Endocrinología',region:'Norte',city:'Arecibo',addr:'Centro Médico del Norte, Arecibo',phone:'787-879-5678'},
-{name:'Dra. Zoe Figueroa',spec:'Ginecología',region:'Norte',city:'Barceloneta',addr:'Calle Palmer 100, Barceloneta',phone:'787-846-6789'},
-{name:'Dr. Héctor Flores',spec:'Neurología',region:'Norte',city:'Vega Baja',addr:'Hospital Wilma Vázquez, Vega Baja',phone:'787-858-7890'},
-// REGIÓN ESTE (Humacao, Fajardo, Caguas, Guayama)
-{name:'Dra. Carmen Torres',spec:'Neurología',region:'Este',city:'Caguas',addr:'Calle Gautier Benítez 200, Caguas',phone:'787-653-6789'},
-{name:'Dra. Isabel Cruz',spec:'Ginecología',region:'Este',city:'Caguas',addr:'Ave. Gautier Benítez 400, Caguas',phone:'787-744-2222'},
-{name:'Dra. Marisol Santiago',spec:'Gastroenterología',region:'Este',city:'Caguas',addr:'HIMA San Pablo, Caguas',phone:'787-653-4567'},
-{name:'Dra. Sandra Figueroa',spec:'Dermatología',region:'Este',city:'Humacao',addr:'Calle Font Martelo 100, Humacao',phone:'787-852-6666'},
-{name:'Dr. Ricardo Aponte',spec:'Medicina General',region:'Este',city:'Fajardo',addr:'Hospital San Pablo del Este, Fajardo',phone:'787-863-1234'},
-{name:'Dr. Carlos Benítez',spec:'Pediatría',region:'Este',city:'Caguas',addr:'Ave. Gautier 300, Caguas',phone:'787-653-2345'},
-{name:'Dra. Yolanda Vélez',spec:'Cardiología',region:'Este',city:'Humacao',addr:'Hospital Ryder, Humacao',phone:'787-852-3456'},
-{name:'Dr. Manuel Reyes',spec:'Ortopedia',region:'Este',city:'Caguas',addr:'HIMA San Pablo, Caguas',phone:'787-653-4567'},
-{name:'Dra. Patricia Rodríguez',spec:'Psiquiatría',region:'Este',city:'Fajardo',addr:'Centro de Salud Fajardo',phone:'787-863-5678'},
-// REGIÓN SUR (Ponce, Guayama, Salinas, Coamo)
-{name:'Dra. María López',spec:'Endocrinología',region:'Sur',city:'Ponce',addr:'Ave. Las Américas 299, Ponce',phone:'787-844-4567'},
-{name:'Dra. Luz Pérez',spec:'Oncología',region:'Sur',city:'Ponce',addr:'Hospital San Lucas, Ponce',phone:'787-844-8901'},
-{name:'Dr. Ramón Pagán',spec:'Medicina General',region:'Sur',city:'Ponce',addr:'Calle Cristina 800, Ponce',phone:'787-841-1234'},
-{name:'Dr. Osvaldo Meléndez',spec:'Urología',region:'Sur',city:'Ponce',addr:'Hospital Damas, Ponce',phone:'787-840-9012'},
-{name:'Dr. Jesús Soto',spec:'Cardiología',region:'Sur',city:'Ponce',addr:'Hospital Dr. Pila, Ponce',phone:'787-848-1234'},
-{name:'Dra. Wanda Collazo',spec:'Pediatría',region:'Sur',city:'Ponce',addr:'Hospital San Lucas, Ponce',phone:'787-844-2345'},
-{name:'Dr. Efraín Camacho',spec:'Neurología',region:'Sur',city:'Ponce',addr:'Centro Médico del Sur, Ponce',phone:'787-844-3456'},
-{name:'Dra. Nilsa Torres',spec:'Ginecología',region:'Sur',city:'Guayama',addr:'Hospital Menonita Guayama',phone:'787-864-4567'},
-{name:'Dr. Pablo Ortiz',spec:'Medicina General',region:'Sur',city:'Salinas',addr:'Centro de Salud Salinas',phone:'787-824-5678'},
-{name:'Dra. Iris Vega',spec:'Dermatología',region:'Sur',city:'Ponce',addr:'Medical Arts Ponce, Ponce',phone:'787-841-6789'},
-// REGIÓN OESTE (Mayagüez, Aguadilla, Cabo Rojo, San Germán)
-{name:'Dra. Patricia Morales',spec:'Ortopedia',region:'Oeste',city:'Mayagüez',addr:'Calle Post 200, Mayagüez',phone:'787-832-4444'},
-{name:'Dra. Gloria Vélez',spec:'Medicina General',region:'Oeste',city:'Mayagüez',addr:'Calle Méndez Vigo 400, Mayagüez',phone:'787-833-2345'},
-{name:'Dr. Francisco Medina',spec:'Cardiología',region:'Oeste',city:'Mayagüez',addr:'Hospital Bella Vista, Mayagüez',phone:'787-834-1234'},
-{name:'Dra. Sonia Pérez',spec:'Pediatría',region:'Oeste',city:'Aguadilla',addr:'Hospital Buen Samaritano, Aguadilla',phone:'787-658-2345'},
-{name:'Dr. Héctor Jiménez',spec:'Ginecología',region:'Oeste',city:'Mayagüez',addr:'Ave. Hostos 300, Mayagüez',phone:'787-832-3456'},
-{name:'Dra. Ana Rodríguez',spec:'Psiquiatría',region:'Oeste',city:'Aguadilla',addr:'Centro Salud Mental, Aguadilla',phone:'787-882-4567'},
-{name:'Dr. Tomás Rivera',spec:'Neurología',region:'Oeste',city:'Mayagüez',addr:'Hospital San Antonio, Mayagüez',phone:'787-834-5678'},
-{name:'Dra. Elena Colón',spec:'Endocrinología',region:'Oeste',city:'San Germán',addr:'Hospital de la Concepción, San Germán',phone:'787-892-6789'},
-{name:'Dr. William Soto',spec:'Medicina General',region:'Oeste',city:'Cabo Rojo',addr:'Centro de Salud Cabo Rojo',phone:'787-851-7890'},
-// REGIÓN CENTRO (Ciales, Utuado, Jayuya, Adjuntas, Ponce)
-{name:'Dr. Sergio Resto',spec:'Medicina General',region:'Centro',city:'Utuado',addr:'Hospital de Área de Utuado',phone:'787-894-1234'},
-{name:'Dra. Maribel Ortiz',spec:'Pediatría',region:'Centro',city:'Ciales',addr:'Centro de Salud Ciales',phone:'787-871-2345'},
-{name:'Dr. Lorenzo Ayala',spec:'Medicina General',region:'Centro',city:'Jayuya',addr:'Centro de Salud Jayuya',phone:'787-828-3456'},
-{name:'Dra. Raquel Medina',spec:'Ginecología',region:'Centro',city:'Adjuntas',addr:'Centro de Salud Adjuntas',phone:'787-829-4567'},
-{name:'Dr. Andrés Figueroa',spec:'Medicina General',region:'Centro',city:'Barranquitas',addr:'Hospital de Área Barranquitas',phone:'787-857-5678'},
+const HOSPITALS_DIR=[
+// REGIÓN METRO
+{name:'Hospital Auxilio Mutuo',region:'Metro',city:'San Juan',addr:'Ave. Ponce de León 735, Hato Rey',phone:'787-758-2000',dir:'https://auxiliomutuo.com/',web:'https://auxiliomutuo.com/',emergency:true},
+{name:'Centro Médico de Puerto Rico',region:'Metro',city:'San Juan',addr:'Ave. Américo Miranda, Río Piedras',phone:'787-754-3535',dir:'https://www.asppr.net',web:'https://www.asppr.net',emergency:true},
+{name:'Hospital Presbiteriano San Juan',region:'Metro',city:'San Juan',addr:'Ave. De Diego 1462, Santurce',phone:'787-721-2160',dir:'https://www.presbypr.com/es/',web:'https://www.presbypr.com/es/',emergency:true},
+{name:'Hospital Pavia Santurce',region:'Metro',city:'San Juan',addr:'Calle ONeill 1462, Santurce',phone:'787-727-6060',dir:'https://hospitalpaviacaguas.com/',web:'https://hospitalpaviacaguas.com/',emergency:true},
+{name:'Hospital San Jorge',region:'Metro',city:'San Juan',addr:'Ave. De Diego 258, Santurce',phone:'787-727-1000',dir:'https://www.sanjorgechildrenshospital.com',web:'https://www.sanjorgechildrenshospital.com',emergency:false},
+{name:'Hospital HIMA San Pablo Bayamón',region:'Metro',city:'Bayamón',addr:'Carr. 2 Km 11.7, Bayamón',phone:'787-780-1800',dir:'https://www.himapr.com/directorio-medicos',web:'https://www.himapr.com',emergency:true},
+{name:'Hospital Universitario Dr. Ramón Ruiz Arnau',region:'Metro',city:'Bayamón',addr:'Ave. Laurel, Santa Juanita, Bayamón',phone:'787-787-5151',dir:'https://www.asppr.net',web:'https://www.asppr.net',emergency:true},
+{name:'Hospital Dr. Cayetano Coll y Toste',region:'Metro',city:'Bayamón',addr:'Carr. 2 Km 11, Bayamón',phone:'787-786-4848',dir:'https://www.asppr.net',web:'https://www.asppr.net',emergency:true},
+{name:'Hospital Pavia Arecibo',region:'Norte',city:'Arecibo',addr:'Ave. J.H. Blum, Arecibo',phone:'787-650-7272',dir:'https://hospitalpaviacaguas.com/',web:'https://hospitalpaviacaguas.com/',emergency:true},
+// REGIÓN NORTE
+{name:'Hospital Dr. Cayetano Coll y Toste Arecibo',region:'Norte',city:'Arecibo',addr:'Ave. José A. Cedeño, Arecibo',phone:'787-878-7272',dir:'https://www.asppr.net',web:'https://www.asppr.net',emergency:true},
+{name:'Hospital Manatí Medical Center',region:'Norte',city:'Manatí',addr:'Calle Hernández 150, Manatí',phone:'787-621-3700',dir:'https://www.manatimedical.com/medicos',web:'https://www.manatimedical.com',emergency:true},
+{name:'Hospital Buen Samaritano',region:'Norte',city:'Aguadilla',phone:'787-658-0000',addr:'Carr. 2 Km 141, Aguadilla',dir:'https://www.buensamaritanohospital.com',web:'https://www.buensamaritanohospital.com',emergency:true},
+{name:'Hospital Wilma N. Vázquez',region:'Norte',city:'Vega Baja',addr:'Carr. 2 Km 36.5, Vega Baja',phone:'787-858-1580',dir:'https://www.asppr.net',web:'https://www.asppr.net',emergency:true},
+// REGIÓN ESTE
+{name:'Hospital Pavia Caguas',region:'Este',city:'Caguas',addr:'Ave. Gautier Benítez, Caguas',phone:'787-653-3434',dir:'https://hospitalpaviacaguas.com/',web:'https://hospitalpaviacaguas.com/',emergency:true},
+{name:'Hospital Menonita Caguas',region:'Este',city:'Caguas',addr:'Ave. Gautier Benítez 100, Caguas',phone:'787-653-0550',dir:'https://www.sistemamenonita.com/hospital-caguas',web:'https://www.sistemamenonita.com/',emergency:true},
+{name:'Hospital Ryder Memorial',region:'Este',city:'Humacao',addr:'Carr. 198 Km 46, Humacao',phone:'787-852-0768',dir:'https://www.ryderhospital.net',web:'https://www.ryderhospital.net',emergency:true},
+{name:'Hospital San Pablo del Este',region:'Este',city:'Fajardo',addr:'Carr. 194, Fajardo',phone:'787-863-0669',dir:'https://www.himapr.com/directorio-medicos',web:'https://www.himapr.com',emergency:true},
+// REGIÓN SUR
+{name:'Hospital Dr. Miguel Susoni',region:'Sur',city:'Arecibo',addr:'Ave. Susoni, Arecibo',phone:'787-878-7272',dir:'https://hmdrpila.com/',web:'https://hmdrpila.com/',emergency:true},
+{name:'Hospital San Lucas',region:'Sur',city:'Ponce',addr:'Ave. Hostos 917, Ponce',phone:'787-844-2080',dir:'https://sanlucaspr.org/',web:'https://sanlucaspr.org/',emergency:true},
+{name:'Hospital Damas',region:'Sur',city:'Ponce',addr:'2213 Ave. Ponce By Pass, Ponce',phone:'787-840-8686',dir:'https://www.hospitaldamas.com/p/welcome',web:'https://www.hospitaldamas.com/p/welcome',emergency:true},
+{name:'Hospital Dr. Manuel de la Pila Iglesias',region:'Sur',city:'Ponce',addr:'Ave. Las Américas, Ponce',phone:'787-848-5800',dir:'https://www.asppr.net',web:'https://www.asppr.net',emergency:true},
+{name:'Hospital Menonita de Guayama',region:'Sur',city:'Guayama',addr:'Carr. 3 Km 134.5, Guayama',phone:'787-864-4300',dir:'https://www.sistemamenonita.com/',web:'https://www.sistemamenonita.com/',emergency:true},
+{name:'Hospital Menonita Guayama',region:'Sur',city:'Guayama',addr:'Calle Font Martelo, Guayama',phone:'787-864-4300',dir:'https://www.sistemamenonita.com/',web:'https://www.sistemamenonita.com/',emergency:true},
+// REGIÓN OESTE
+{name:'Hospital San Antonio Mayagüez',region:'Oeste',city:'Mayagüez',addr:'Calle Dr. Basora, Mayagüez',phone:'787-834-0050',dir:'https://www.himapr.com/directorio-medicos',web:'https://www.himapr.com',emergency:true},
+{name:'Hospital Bella Vista Mayagüez',region:'Oeste',city:'Mayagüez',addr:'Carr. 349, Mayagüez',phone:'787-834-2550',dir:'https://www.bellavistahospital.com',web:'https://www.bellavistahospital.com',emergency:true},
+{name:'Hospital Pavia Yauco',region:'Oeste',city:'Yauco',addr:'Carr. 128, Yauco',phone:'787-856-1000',dir:'https://hospitalpaviacaguas.com/',web:'https://hospitalpaviacaguas.com/',emergency:true},
+{name:'Hospital de la Concepción',region:'Oeste',city:'San Germán',addr:'Calle Luna, San Germán',phone:'787-892-1860',dir:'https://hospitaldelaconcepcion.com/',web:'https://hospitaldelaconcepcion.com/',emergency:true},
+{name:'Hospital Regional de Cabo Rojo',region:'Oeste',city:'Cabo Rojo',addr:'Carr. 100, Cabo Rojo',phone:'787-851-2025',dir:'https://www.asppr.net',web:'https://www.asppr.net',emergency:true},
+{name:'Mayaguez Medical Center',region:'Oeste',city:'Mayagüez',addr:'410 Hostos Ave, Mayagüez',phone:'787-652-9200',dir:'https://mayaguezmedical.com/',web:'https://mayaguezmedical.com/',emergency:true},
+// REGIÓN CENTRO
+{name:'Hospital Menonita de Aibonito',region:'Centro',city:'Aibonito',addr:'Calle José C. Vázquez, Aibonito',phone:'787-735-8001',dir:'https://www.sistemamenonita.com/hospital-menonita-aibonito',web:'https://www.sistemamenonita.com/',emergency:true},
+{name:'Hospital de Área de Utuado',region:'Centro',city:'Utuado',addr:'Carr. 111, Utuado',phone:'787-894-2100',dir:'https://www.asppr.net',web:'https://www.asppr.net',emergency:true},
+{name:'Hospital de Área de Barranquitas',region:'Centro',city:'Barranquitas',addr:'Carr. 152, Barranquitas',phone:'787-857-0000',dir:'https://www.asppr.net',web:'https://www.asppr.net',emergency:true},
+// Hospitales adicionales con directorios oficiales
+{name:'ASEM - Administración de Servicios Médicos',region:'Metro',city:'San Juan',addr:'Puerto Rico - Servicio de Emergencias',phone:'787-765-2929',dir:'https://www.asem.pr.gov/',web:'https://www.asem.pr.gov/',emergency:true},
+{name:'Sistema Menonita de Salud',region:'Centro',city:'Puerto Rico',addr:'Red de hospitales en toda la isla',phone:'787-735-8001',dir:'https://www.sistemamenonita.com/',web:'https://www.sistemamenonita.com/',emergency:false},
+{name:'Hospital Menonita Caguas',region:'Este',city:'Caguas',addr:'Ave. Gautier Benítez, Caguas',phone:'787-653-0550',dir:'https://www.sistemamenonita.com/hospital-caguas',web:'https://www.sistemamenonita.com/',emergency:true},
+{name:'Hospital Menonita Cayey',region:'Este',city:'Cayey',addr:'Carr. 14, Cayey',phone:'787-263-1001',dir:'https://www.sistemamenonita.com/hospital-cayey',web:'https://www.sistemamenonita.com/',emergency:true},
+{name:'Hospital San Cristóbal (Professional)',region:'Sur',city:'Ponce',addr:'Carr. 14, Ponce',phone:'787-848-8000',dir:'https://professionalhospital.net/',web:'https://professionalhospital.net/',emergency:true},
+{name:'Hospital Universitario de Puerto Rico (UPR)',region:'Metro',city:'Carolina',addr:'65 de Infantería, Carolina',phone:'787-757-1800',dir:'https://www.hospitalupr.org/',web:'https://www.hospitalupr.org/',emergency:true},
+{name:'Hospital Gastaner',region:'Centro',city:'Castañer',addr:'Carr. 135, Lares',phone:'787-829-5010',dir:'https://hgcastaner.com/',web:'https://hgcastaner.com/',emergency:true},
+{name:'Doctors Center Hospital',region:'Metro',city:'San Juan',addr:'Carr. 2, Bayamón',phone:'787-785-6060',dir:'https://www.doctorscenterhospital.com/',web:'https://www.doctorscenterhospital.com/',emergency:true},
 ];
 
 const EMERGENCY=[
@@ -798,7 +850,7 @@ const DICT=[
 // LANGUAGE STRINGS
 const S={
 es:{langBtn:'🇺🇸 EN',
- nl:['Perfil','Medicamentos','Historial','Vitales','Directrices','Alarmas','SOS','Médicos','Tools'],
+ nl:['Perfil','Medicamentos','Historial','Vitales','Directrices','Alarmas','SOS','Médicos','Tools','Mi QR'],
  specs:['Todos','Cardiología','Endocrinología','Neurología','Oncología','Pediatría','Ginecología','Ortopedia','Dermatología','Psiquiatría','Medicina General','Gastroenterología','Nefrología','Oftalmología','Reumatología','Urología'],
  cities:['Todos','San Juan','Bayamón','Caguas','Ponce','Mayagüez','Arecibo','Humacao'],
  toast:'✅ Guardado exitosamente',active:'Activo',inactive:'Inactivo',medSel:'— Seleccionar —',
@@ -806,7 +858,7 @@ es:{langBtn:'🇺🇸 EN',
  callBtn:'📞 Llamar',mapBtn:'🗺️ Mapa',days:['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'],
 },
 en:{langBtn:'🇵🇷 ES',
- nl:['Profile','Medications','History','Vitals','Directives','Alarms','SOS','Doctors','Tools'],
+ nl:['Profile','Medications','History','Vitals','Directives','Alarms','SOS','Doctors','Tools','My QR'],
  specs:['All','Cardiology','Endocrinology','Neurology','Oncology','Pediatrics','Gynecology','Orthopedics','Dermatology','Psychiatry','General Medicine','Gastroenterology','Nephrology','Ophthalmology','Rheumatology','Urology'],
  cities:['All','San Juan','Bayamón','Caguas','Ponce','Mayagüez','Arecibo','Humacao'],
  toast:'✅ Saved successfully',active:'Active',inactive:'Inactive',medSel:'— Select —',
@@ -835,7 +887,7 @@ function goTo(screen,idx){
   document.querySelectorAll('.navit').forEach(n=>n.classList.remove('active'));
   document.getElementById('sc-'+screen).classList.add('active');
   document.getElementById('nav-'+idx).classList.add('active');
-  const r={medications:renderMeds,history:renderHist,vitals:renderVitals,reminders:renderRems,emergency:renderEmerg,directory:renderDir,tools:renderTools};
+  const r={medications:renderMeds,history:renderHist,vitals:renderVitals,reminders:renderRems,emergency:renderEmerg,directory:renderDir,tools:renderTools,qrcard:generatePatientQR};
   if(r[screen])r[screen]();
 }
 
@@ -1050,43 +1102,59 @@ function addRem(){
 function renderEmerg(){
   const s=S[lang];
   document.getElementById('emergList').innerHTML=EMERGENCY.map(e=>'<div class="emcard"><div class="emhead"><div class="emico" style="background:'+e.color+'22">'+e.ico+'</div><div style="flex:1"><div class="emnm">'+e.name+'</div><div class="emnum">'+e.num+'</div></div><a href="tel:'+e.num.replace(/\D/g,'')+'" style="text-decoration:none"><button class="emcall" style="background:'+e.color+'">'+s.callBtn+'</button></a></div></div>').join('');
-  document.getElementById('hospList').innerHTML=HOSPITALS.map(h=>'<div class="hospcard"><div class="hospname">🏥 '+h.name+'</div><div class="hospaddr">📍 '+h.addr+'</div><div class="hospphone">📞 '+h.phone+'</div><div class="hospbtns"><a href="tel:'+h.phone.replace(/\D/g,'')+'" style="text-decoration:none;flex:1"><button class="hospbtn" style="width:100%">'+s.callBtn+'</button></a><a href="https://maps.google.com/?q='+encodeURIComponent(h.name+' '+h.addr)+'" target="_blank" style="text-decoration:none;flex:1"><button class="hospbtn" style="width:100%">'+s.mapBtn+'</button></a></div></div>').join('');
+  
 }
 
-// DIRECTORY
+// Google Search for doctors
+function searchGoogle(){
+  const q = document.getElementById('docSearch').value.trim();
+  const query = q 
+    ? 'médico ' + q + ' Puerto Rico' 
+    : 'médicos especialistas Puerto Rico';
+  const url = 'https://www.google.com/search?q=' + encodeURIComponent(query);
+  window.open(url, '_blank');
+}
+
+// DIRECTORY - Hospital based
 let activeRegion='Todas';
-let activeSpec2='Todas';
 const REGIONS=['Todas','🏙️ Metro','🌿 Norte','🌊 Este','☀️ Sur','🌅 Oeste','🏔️ Centro'];
 const REGION_MAP={'🏙️ Metro':'Metro','🌿 Norte':'Norte','🌊 Este':'Este','☀️ Sur':'Sur','🌅 Oeste':'Oeste','🏔️ Centro':'Centro'};
 
 function renderDir(){
   const s=S[lang];
   const sf=document.getElementById('specFilters');
-  // Region filters row
-  const regionRow=REGIONS.map(function(r){return '<div class="dirtag '+(activeRegion===r?'active':'')+'" onclick="filterByRegion(\'' + r + '\')">'+ r +'</div>';}).join('');
-  // Spec filters row  
-  const allSpecs=['Todas',...new Set(DOCTORS.map(function(d){return d.spec;}))];
-  const specRow=allSpecs.map(function(sp){return '<div class="dirtag '+(activeSpec2===sp?'active':'')+'" style="font-size:10px;padding:4px 10px" onclick="filterBySpec2(\'' + sp + '\')">'+ sp +'</div>';}).join('');
-  sf.innerHTML='<div style="margin-bottom:6px"><div style="font-size:10px;font-weight:700;color:var(--t2);margin-bottom:5px">REGIÓN</div><div style="display:flex;gap:5px;overflow-x:auto;scrollbar-width:none;padding-bottom:4px">'+regionRow+'</div></div><div><div style="font-size:10px;font-weight:700;color:var(--t2);margin-bottom:5px">ESPECIALIDAD</div><div style="display:flex;gap:5px;overflow-x:auto;scrollbar-width:none;padding-bottom:4px">'+specRow+'</div></div>';
+  const regionRow=REGIONS.map(function(r){
+    return '<div class="dirtag '+(activeRegion===r?'active':'')+'" onclick="filterByRegion(\'' + r + '\')">'+ r +'</div>';
+  }).join('');
+  sf.innerHTML='<div style="margin-bottom:6px"><div style="font-size:10px;font-weight:700;color:var(--t2);margin-bottom:5px">'+(lang==='es'?'REGIÓN':'REGION')+'</div><div style="display:flex;gap:5px;overflow-x:auto;scrollbar-width:none;padding-bottom:4px">'+regionRow+'</div></div>';
   filterDocs();
 }
 function filterByRegion(r){activeRegion=r;renderDir();}
-function filterBySpec2(sp){activeSpec2=sp;renderDir();}
-function filterBySpec(sp){activeSpec2=sp;renderDir();}
+function filterBySpec(sp){}
 function filterDocs(){
   const q=document.getElementById('docSearch')?.value?.toLowerCase()||'';
-  let filtered=DOCTORS;
-  if(activeRegion!=='Todas'){const rm=REGION_MAP[activeRegion];if(rm)filtered=filtered.filter(function(d){return d.region===rm;});}
-  if(activeSpec2!=='Todas')filtered=filtered.filter(function(d){return d.spec===activeSpec2;});
-  if(q)filtered=filtered.filter(function(d){return d.name.toLowerCase().includes(q)||d.spec.toLowerCase().includes(q)||d.city.toLowerCase().includes(q)||d.region.toLowerCase().includes(q);});
+  let filtered=HOSPITALS_DIR;
+  if(activeRegion!=='Todas'){const rm=REGION_MAP[activeRegion];if(rm)filtered=filtered.filter(function(h){return h.region===rm;});}
+  if(q)filtered=filtered.filter(function(h){return h.name.toLowerCase().includes(q)||h.city.toLowerCase().includes(q)||h.addr.toLowerCase().includes(q);});
   const s=S[lang];
   const c=document.getElementById('docList');
-  if(!filtered.length){c.innerHTML='<div class="empty"><div class="eico">👨‍⚕️</div><p>'+(lang==='es'?'No encontrado':'Not found')+'</p></div>';return;}
-  c.innerHTML=filtered.map(function(d){
-    const regionBadge='<span style="font-size:9px;font-weight:700;background:var(--pl);color:var(--p);padding:2px 7px;border-radius:20px;margin-left:6px">'+d.region+'</span>';
-    return '<div class="doccard"><div class="docname">'+d.name+regionBadge+'</div><div class="docspec">🏥 '+d.spec+'</div><div class="docaddr">📍 '+d.addr+', '+d.city+'</div><div class="docphone">📞 '+d.phone+'</div><div class="docbtns"><a href="tel:'+d.phone.replace(/[^0-9]/g,'')+'" style="text-decoration:none"><button class="docbtn">'+s.callBtn+'</button></a><a href="https://maps.google.com/?q='+encodeURIComponent(d.name+' '+d.addr+' '+d.city+' Puerto Rico')+'" target="_blank" style="text-decoration:none"><button class="docbtn">'+s.mapBtn+'</button></a></div></div>';
+  if(!filtered.length){c.innerHTML='<div class="empty"><div class="eico">🏥</div><p>'+(lang==='es'?'No encontrado':'Not found')+'</p></div>';return;}
+  c.innerHTML=filtered.map(function(h){
+    const emergBadge=h.emergency?'<span style="font-size:9px;font-weight:700;background:#FDECEA;color:var(--d);padding:2px 7px;border-radius:20px;margin-left:6px">🚨 '+(lang==='es'?'Emergencias':'Emergency')+'</span>':'';
+    const regionBadge='<span style="font-size:9px;font-weight:700;background:var(--pl);color:var(--p);padding:2px 7px;border-radius:20px;margin-left:4px">'+h.region+'</span>';
+    return '<div class="doccard">'+
+      '<div class="docname">🏥 '+h.name+regionBadge+emergBadge+'</div>'+
+      '<div class="docaddr" style="margin-top:4px">📍 '+h.addr+'</div>'+
+      '<div class="docphone">📞 '+h.phone+'</div>'+
+      '<div class="docbtns">'+
+        '<a href="tel:'+h.phone.replace(/[^0-9]/g,'')+'" style="text-decoration:none"><button class="docbtn">📞 '+(lang==='es'?'Llamar':'Call')+'</button></a>'+
+        '<a href="'+h.dir+'" target="_blank" style="text-decoration:none"><button class="docbtn" style="background:#E6F4EA;color:var(--a)">👨‍⚕️ '+(lang==='es'?'Directorio':'Directory')+'</button></a>'+
+        '<a href="https://maps.google.com/?q='+encodeURIComponent(h.name+' '+h.city+' Puerto Rico')+'" target="_blank" style="text-decoration:none"><button class="docbtn">🗺️ Mapa</button></a>'+
+      '</div>'+
+    '</div>';
   }).join('');
 }
+
 
 // TOOLS / DICTIONARY / AI / QR
 function renderTools(){
@@ -1238,6 +1306,108 @@ function updClock(){const n=new Date();document.getElementById('clock').textCont
 
 
 // INIT
+// ── QR CARD ──────────────────────────────────────────────────
+function generatePatientQR() {
+  // Update card preview with current profile data
+  const name = document.getElementById('inp-name')?.value || '';
+  const dob = document.getElementById('inp-dob')?.value || '';
+  const blood = document.getElementById('inp-blood')?.value || 'A+';
+  const allergy = document.getElementById('inp-allergy')?.value || '';
+  const emerg = document.getElementById('inp-emerg')?.value || '';
+  const ins = document.getElementById('inp-ins')?.value || '';
+  const phone = document.getElementById('inp-phone')?.value || '';
+
+  // Update card display
+  document.getElementById('qr-name').textContent = name || (lang==='es'?'Nombre no registrado':'Name not registered');
+  document.getElementById('qr-dob').textContent = dob ? (lang==='es'?'Nacimiento: ':'DOB: ') + formatDOB(dob) : '';
+  document.getElementById('qr-blood').textContent = '🩸 ' + blood;
+  document.getElementById('qr-ins-badge').textContent = ins || '';
+  document.getElementById('qr-allergies').textContent = allergy || (lang==='es'?'Ninguna indicada':'None indicated');
+  document.getElementById('qr-emerg').textContent = emerg || (lang==='es'?'No indicado':'Not indicated');
+
+  // Active medications
+  const activeMeds = medications.filter(function(m){return m.active;});
+  document.getElementById('qr-meds').textContent = activeMeds.length 
+    ? activeMeds.map(function(m){return m.name + (m.dose?' ('+m.dose+')':'');}).join(', ')
+    : (lang==='es'?'Ninguno':'None');
+
+  // Directives
+  const dirContainer = document.getElementById('qr-dirs');
+  const dirLabels = {
+    cpr: lang==='es'?'CPR':'CPR',
+    blood: lang==='es'?'Transfusión':'Transfusion',
+    intub: lang==='es'?'Intubación':'Intubation',
+    organ: lang==='es'?'Donante':'Donor'
+  };
+  dirContainer.innerHTML = Object.keys(dirLabels).map(function(key){
+    const val = directives[key];
+    if(val === null) return '<span style="background:var(--bg);color:var(--t2);font-size:9px;font-weight:700;padding:2px 8px;border-radius:20px">'+dirLabels[key]+': ?</span>';
+    return '<span style="background:'+(val?'#E6F4EA':'#FDECEA')+';color:'+(val?'var(--a)':'var(--d)')+';font-size:9px;font-weight:700;padding:2px 8px;border-radius:20px">'+dirLabels[key]+': '+(val?'✅ SÍ':'❌ NO')+'</span>';
+  }).join('');
+
+  // Build QR data - compact medical info
+  const qrData = [
+    'EASS Health - Tarjeta Médica',
+    'Paciente: ' + (name||'No indicado'),
+    'Sangre: ' + blood,
+    dob ? 'DOB: ' + formatDOB(dob) : '',
+    'Tel: ' + (phone||'No indicado'),
+    'Seguro: ' + (ins||'No indicado'),
+    'Alergias: ' + (allergy||'Ninguna'),
+    'Medicamentos: ' + (activeMeds.length ? activeMeds.map(function(m){return m.name;}).join(', ') : 'Ninguno'),
+    'CPR: ' + (directives.cpr===null?'No indicado':directives.cpr?'SI':'NO'),
+    'Transfusion: ' + (directives.blood===null?'No indicado':directives.blood?'SI':'NO'),
+    'Intubacion: ' + (directives.intub===null?'No indicado':directives.intub?'SI':'NO'),
+    'Donante organos: ' + (directives.organ===null?'No indicado':directives.organ?'SI':'NO'),
+    'Emergencia: ' + (emerg||'No indicado'),
+    'App: elmerabimelech-hue.github.io/EASShealth'
+  ].filter(Boolean).join(' | ');
+
+  // Generate QR
+  const qrContainer = document.getElementById('patientQR');
+  qrContainer.innerHTML = '';
+  try {
+    new QRCode(qrContainer, {
+      text: qrData,
+      width: 180,
+      height: 180,
+      colorDark: '#1A73E8',
+      colorLight: '#ffffff',
+      correctLevel: QRCode.CorrectLevel.M
+    });
+  } catch(e) {
+    qrContainer.innerHTML = '<div style="padding:20px;color:var(--t2);font-size:12px">Error generando QR. Verifica que ingresaste tus datos.</div>';
+  }
+
+  showToastMsg(lang==='es'?'🪪 QR actualizado!':'🪪 QR updated!');
+}
+
+function formatDOB(d) {
+  if(!d) return '';
+  const p = d.split('-');
+  return p[2]+'/'+p[1]+'/'+p[0];
+}
+
+function printCard() {
+  generatePatientQR();
+  setTimeout(function(){
+    window.print();
+  }, 500);
+}
+
+function shareCard() {
+  generatePatientQR();
+  const name = document.getElementById('inp-name')?.value || 'Paciente';
+  const text = 'Mi tarjeta médica de emergencia - EASS Health\n' + name + '\nelmerabimelech-hue.github.io/EASShealth';
+  if(navigator.share) {
+    navigator.share({title:'EASS Health - Tarjeta Médica', text: text, url:'https://elmerabimelech-hue.github.io/EASShealth'});
+  } else {
+    navigator.clipboard.writeText(text).then(function(){
+      showToastMsg(lang==='es'?'📋 Copiado!':'📋 Copied!');
+    });
+  }
+}
+
 window.onload = function() {
   var lb = document.getElementById('loginBtn') || document.getElementById('loginBtnMain');
   if(lb) lb.onclick = doLogin;
