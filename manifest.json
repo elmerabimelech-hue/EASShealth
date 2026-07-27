@@ -1,0 +1,25 @@
+{
+  "name": "EASS Health — Mi Salud Familiar",
+  "short_name": "EASS Health",
+  "description": "Gestión médica familiar segura y personal",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#7B9FD4",
+  "theme_color": "#1A73E8",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
